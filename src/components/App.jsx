@@ -15,11 +15,20 @@ export class App extends Component {
     ],
     filter: '',
   };
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log('[componentDidUpdate]');
-    console.log('prevProps:', prevProps);
-    console.log('prevState:', prevState);
-    console.log('snapshot:', snapshot);
+
+  // записываем данные из localStorage в state при загрузке страницы
+  componentDidMount(prevProps, prevState) {
+    const dataFromLS = JSON.parse(localStorage.getItem('contacts'));
+    if (dataFromLS !== this.state.contacts) {
+      this.setState({ contacts: dataFromLS });
+    }
+  }
+
+  // записываем данные в localStorage из state при обновлении state
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
   }
   render() {
     // Логика добавления нового контакта:

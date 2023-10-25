@@ -44,7 +44,6 @@ export class App extends Component {
       });
     };
 
-    //
     // Фільтр пошуку по імені
     const handleFilterChange = e => {
       this.setState({

@@ -14,7 +14,6 @@ export class Phonebook extends Component {
   }
 
   render() {
-    //
     // Логика нажатия кнопки Add contact:
     const handleBtnClick = e => {
       e.preventDefault();
@@ -29,7 +28,7 @@ export class Phonebook extends Component {
         this.setState({ name: '', number: '' });
       }
     };
-    //
+
     // Логика ввода текста в инпуты для Add contact
     const handleInputChange = e => {
       this.setState({ [e.target.name]: e.target.value });

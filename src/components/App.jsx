@@ -16,60 +16,96 @@ export class App extends Component {
     filter: '',
   };
 
+  //
   // записываем данные из localStorage в state при загрузке страницы
-  componentDidMount(prevProps, prevState) {
-    const dataFromLS = JSON.parse(localStorage.getItem('contacts'));
-    if (dataFromLS !== this.state.contacts) {
-      this.setState({ contacts: dataFromLS });
-    }
-  }
+  componentDidMount = (prevProps, prevState) => {
+    const datafromLS = localStorage.getItem('contacts');
 
+    if (!datafromLS) {
+      return;
+    } else {
+      const lStorage = localStorage.getItem('contacts');
+      this.setState({ contacts: JSON.parse(lStorage) });
+    }
+  };
+
+  //
   // записываем данные в localStorage из state при обновлении state
   componentDidUpdate(prevProps, prevState) {
     if (this.state.contacts !== prevState.contacts) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
   }
-  render() {
-    // Логика добавления нового контакта:
-    const addNewContact = newContact => {
-      const { contacts } = this.state;
 
-      if (contacts.find(contact => contact.name === newContact.name)) {
-        alert(newContact.name + ' is already in contacts.');
-        return;
+  //
+  // Логіка додавання нового контакту:
+  addNewContact = newContact => {
+    const { contacts } = this.state;
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+      )
+    ) {
+      alert(newContact.name + ' is already in contacts.');
+      return;
+    }
+    this.setState(prevState => {
+      return { contacts: [newContact, ...prevState.contacts] };
+    });
+  };
+
+  //
+  // Зміна значення state.filter в інпуті фільтра
+  handleFilterChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  //
+  // Фільтр пошуку по імені і номеру для передачі відфільтрованого масиву в ContactList
+  // contactsFilter = () => {
+  //   return this.state.contacts.filter(contact => {
+  //     return `${contact.name}${contact.number}`
+  //       .toLowerCase()
+  //       .includes(this.state.filter.toLowerCase().trim());
+  //   });
+  // };
+  contactsFilter = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter(({ name, number }) => {
+      if (filter) {
+        return (
+          name.trim().toLowerCase().includes(filter.toLowerCase()) ||
+          number.trim().toLowerCase().includes(filter.toLowerCase())
+        );
+      } else {
+        return true;
       }
-      this.setState({
-        contacts: [...contacts, newContact],
-      });
-    };
+    });
+  };
 
-    // Фільтр пошуку по імені
-    const handleFilterChange = e => {
-      this.setState({
-        filter: e.target.value.trim(),
-      });
-    };
+  //
+  // Перевірка на збереження копій контактів
+  deleteContact = id => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      };
+    });
+  };
 
-    // Перевірка на збереження копій контактів
-    const deleteContact = e => {
-      let idToDelete = e.target.value;
-      const updatedContacts = this.state.contacts.filter(
-        contact => contact.id !== idToDelete
-      );
-      this.setState({ contacts: updatedContacts });
-    };
-
+  render() {
     return (
       <div className={css.mainBox}>
-        <h1>Phonebook</h1>
-        <ContactForm addNewContact={addNewContact} props={this.state} />
+        <h1>Phonebook-HW3</h1>
+        <ContactForm addNewContact={this.addNewContact} props={this.state} />
         <h2>Contacts</h2>
-        <Filter onFilterChange={handleFilterChange} />
+        <Filter
+          onFilterChange={this.handleFilterChange}
+          value={this.state.filter}
+        />
         <ContactList
-          contactsState={this.state.contacts}
-          filter={this.state.filter}
-          deleteContact={deleteContact}
+          contacts={this.contactsFilter()}
+          deleteContact={this.deleteContact}
         />
       </div>
     );

@@ -3,24 +3,17 @@ import PropTypes from 'prop-types';
 
 import css from './ContactList.module.css';
 
-export default function Contacts({ contactsState, filter, deleteContact }) {
-  let arr = Object.values(contactsState);
-  let result = [];
-
-  if (filter) {
-    result = arr.filter(a =>
-      a.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  } else {
-    result = arr;
-  }
-
+export default function ContactList({ contacts, deleteContact }) {
   return (
     <div>
-      {result.map(item => (
+      {contacts.map(item => (
         <li className={css.item} key={item.id}>
           {item.name}: {item.number}
-          <button className={css.btn} value={item.id} onClick={deleteContact}>
+          <button
+            className={css.btn}
+            value={item.id}
+            onClick={() => deleteContact(item.id)}
+          >
             Delete
           </button>
         </li>
@@ -29,6 +22,6 @@ export default function Contacts({ contactsState, filter, deleteContact }) {
   );
 }
 
-Contacts.propTypes = {
-  contactsState: PropTypes.array.isRequired,
+ContactList.propTypes = {
+  contacts: PropTypes.array.isRequired,
 };

@@ -12,21 +12,33 @@ export class ContactForm extends Component {
 
   //
   // Логіка кнопки Add contact:
+  // handleBtnClick = e => {
+  //   e.preventDefault();
+
+  //   const id = nanoid();
+  //   if (!this.state.name && !this.state.number) {
+  //     return;
+  //   } else {
+  //     let newContact = {
+  //       id: id,
+  //       name: this.state.name,
+  //       number: this.state.number,
+  //     };
+  //     this.props.addNewContact(newContact);
+  //     console.log(this.props);
+  //     this.setState({ name: '', number: '' });
+  //   }
+  // };
+
+  // Логіка кнопки Add contact v2 (ментор)
   handleBtnClick = e => {
     e.preventDefault();
-    const id = nanoid();
     if (!this.state.name && !this.state.number) {
       return;
-    } else {
-      let newContact = {
-        id: id,
-        name: this.state.name,
-        number: this.state.number,
-      };
-      this.props.addNewContact(newContact);
-      console.log(this.props);
-      this.setState({ name: '', number: '' });
     }
+
+    this.props.addNewContact({ ...this.state, id: nanoid() });
+    this.setState({ name: '', number: '' });
   };
 
   //

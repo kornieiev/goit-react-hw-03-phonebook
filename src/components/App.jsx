@@ -18,12 +18,20 @@ export class App extends Component {
 
   //
   // записываем данные из localStorage в state при загрузке страницы
+  // componentDidMount = (prevProps, prevState) => {
+  //   const datafromLS = localStorage.getItem('contacts');
+
+  //   if (!datafromLS) {
+  //     return;
+  //   } else {
+  //     const lStorage = localStorage.getItem('contacts');
+  //     this.setState({ contacts: JSON.parse(lStorage) });
+  //   }
+  // };
+  // версія ментора:
   componentDidMount = (prevProps, prevState) => {
     const datafromLS = localStorage.getItem('contacts');
-
-    if (!datafromLS) {
-      return;
-    } else {
+    if (datafromLS) {
       const lStorage = localStorage.getItem('contacts');
       this.setState({ contacts: JSON.parse(lStorage) });
     }
@@ -69,17 +77,18 @@ export class App extends Component {
   //       .includes(this.state.filter.toLowerCase().trim());
   //   });
   // };
+  // версія ментора 1:
   contactsFilter = () => {
     const { contacts, filter } = this.state;
+    const normalizeFilter = filter.toLowerCase();
     return contacts.filter(({ name, number }) => {
       if (filter) {
         return (
-          name.trim().toLowerCase().includes(filter.toLowerCase()) ||
-          number.trim().toLowerCase().includes(filter.toLowerCase())
+          name.trim().toLowerCase().includes(normalizeFilter) ||
+          number.trim().toLowerCase().includes(normalizeFilter)
         );
-      } else {
-        return true;
       }
+      return contacts;
     });
   };
 
